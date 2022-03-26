@@ -5,6 +5,9 @@
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
 export function appendToBody(tag, content, count) {
+    for (let i = 0; i < count; i++) {
+        document.body.innerHTML += '<' + tag + '>' + content + '</' + tag + '>';
+    }
 }
 
 /*
@@ -15,6 +18,24 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
+    function AddBranch(element, levelBranch) {
+        for (let i = 0; i < childrenCount; i++) {
+            element.innerHTML += `<div class="item_${levelBranch}"/>`;
+            if (levelBranch !== level) {
+                const currentLevelList = document.querySelectorAll(
+                    '.item_' + levelBranch,
+                );
+                AddBranch(
+                    currentLevelList[currentLevelList.length - 1],
+                    levelBranch + 1,
+                );
+            }
+        }
+    }
+    document.body.innerHTML = `<div class="item_1"></div>`;
+    AddBranch(document.querySelector('.item_1'), level - 1);
+
+    return document.querySelector('.item_1');
 }
 
 /*
@@ -26,4 +47,13 @@ export function generateTree(childrenCount, level) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function replaceNodes() {
+    generateTree(2, 3);
+    let unit_collect = document.querySelectorAll('.item_2');
+    for (let i = 0; i < unit_collect.length; i++) {
+        unit_collect[i].outerHTML =
+            '<section class="item_2">' +
+            unit_collect[i].innerHTML +
+            '</section>';
+    }
+    return document.querySelector('.item_1');
 }
